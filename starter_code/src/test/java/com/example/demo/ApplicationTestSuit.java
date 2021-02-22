@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
         UserAuthTest.class
 
 })
-public class SareetaApplicationTests {
+public class ApplicationTestSuit {
     @Test
     public void contextLoads() {
     }

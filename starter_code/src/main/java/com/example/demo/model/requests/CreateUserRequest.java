@@ -1,11 +1,17 @@
 package com.example.demo.model.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.context.annotation.Bean;
-
-import javax.persistence.Column;
 
 public class CreateUserRequest {
+	@Override
+	public String toString() {
+		return "CreateUserRequest{" +
+				"username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", confirmPassword='" + confirmPassword + '\'' +
+				'}';
+	}
+
 	public String getPassword() {
 		return password;
 	}

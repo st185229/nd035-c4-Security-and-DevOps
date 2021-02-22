@@ -24,6 +24,16 @@ public class Item {
 		this.description = description;
 	}
 
+	@Override
+	public String toString() {
+		return "Item{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price=" + price +
+				", description='" + description + '\'' +
+				'}';
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
@@ -63,11 +73,8 @@ public class Item {
 			return false;
 		Item other = (Item) obj;
 		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+			return other.id == null;
+		} else return id.equals(other.id);
 	}
 
 	public Long getId() {
@@ -92,10 +99,6 @@ public class Item {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
-	}
-
-	public String getDescription() {
-		return description;
 	}
 
 	public void setDescription(String description) {

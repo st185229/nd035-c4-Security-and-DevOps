@@ -84,4 +84,11 @@ public class ItemControllerTest {
         assertEquals(new BigDecimal("1.23"), items.get(0).getPrice());
 
     }
+
+    @Test
+    public void get_item_should_fail_when_item_does_not_exists() {
+        List<Item> items = itemController.getItemsByName("nonexistent").getBody();
+        assert items == null;
+
+    }
 }

@@ -17,6 +17,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "user")
 public class User {
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				", cart=" + cart +
+				'}';
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

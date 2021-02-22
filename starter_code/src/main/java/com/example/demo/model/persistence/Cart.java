@@ -1,28 +1,25 @@
 package com.example.demo.model.persistence;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "cart")
 public class Cart {
-	
+	@Override
+	public String toString() {
+		return "Cart{" +
+				"id=" + id +
+				", items=" + items +
+				", user=" + user +
+				", total=" + total +
+				'}';
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
@@ -46,9 +43,6 @@ public class Cart {
 		return total;
 	}
 
-	public void setTotal(BigDecimal total) {
-		this.total = total;
-	}
 
 	public User getUser() {
 		return user;
@@ -62,18 +56,10 @@ public class Cart {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public List<Item> getItems() {
 		return items;
 	}
 
-	public void setItems(List<Item> items) {
-		this.items = items;
-	}
-	
 	public void addItem(Item item) {
 		if(items == null) {
 			items = new ArrayList<>();
