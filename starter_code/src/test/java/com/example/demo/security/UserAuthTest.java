@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,7 +59,6 @@ public class UserAuthTest {
                 .andExpect(status().isOk());
 
         String accessToken = loginResult.andReturn().getResponse().getHeader("Authorization");
-
         Assert.assertNotNull(accessToken);
 
 
@@ -73,7 +73,34 @@ public class UserAuthTest {
 
     }
 
+
     @Test
+    public void given_non_matching_password_create_user_fails() throws Exception {
+
+        String json = "{\"username\": \"Suresh\",\"password\":\"pass12345678\",\"confirmPassword\": \"passunmatching\"}";
+
+        ResultActions registrationResult = mvc.perform(
+                post(new URI("/api/user/create"))
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    public void given_small_password_to_register_fails() throws Exception {
+
+        String json = "{\"username\": \"Suresh\",\"password\":\"aa\",\"confirmPassword\": \"aa\"}";
+
+        ResultActions registrationResult = mvc.perform(
+                post(new URI("/api/user/create"))
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+
+        @Test
     public void given_user_cannot_access_apis_without_bearer_jwt() throws Exception {
         // Access user profile without access token - negative test
         String json = "{\"username\": \"Suresh\",\"password\" : \"pass12345678\"}";
@@ -97,7 +124,6 @@ public class UserAuthTest {
 
     }
 
-
     @Test
     public void given_user_can_not_access_purchases_history_without_being_authenticated() throws Exception {
 
@@ -108,5 +134,6 @@ public class UserAuthTest {
                 .andExpect(status().isForbidden());
 
     }
+
 
 }

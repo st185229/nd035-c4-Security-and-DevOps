@@ -72,9 +72,6 @@ public class Cart {
 
 	public void setItems(List<Item> items) {
 		this.items = items;
-		//Added by Suresh as when you set the items , the total was not set
-		total = items.stream().map(item -> item.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
-
 	}
 	
 	public void addItem(Item item) {

@@ -3,15 +3,16 @@ package com.example.demo.controllers;
 import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.Item;
 import com.example.demo.model.persistence.User;
-import com.example.demo.model.persistence.repositories.CartRepository;
-import com.example.demo.model.persistence.repositories.ItemRepository;
 import com.example.demo.model.requests.CreateUserRequest;
 import com.example.demo.model.requests.ModifyCartRequest;
+import com.example.demo.service.CartService;
+import com.example.demo.service.ItemService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,7 +20,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,9 +31,9 @@ public class CartControllerTest {
     @Autowired
     private UserController userController;
     @Autowired
-    private CartRepository cartRepository;
+    private CartService cartService;
     @Autowired
-    private ItemRepository itemRepository;
+    private ItemService itemService;
     private Cart cart;
     private User user;
 
@@ -48,7 +49,7 @@ public class CartControllerTest {
     @Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
 
-        itemRepository.saveAll(ItemControllerTest.CreateMockItems());
+        itemService.saveAllInventoryItems(ItemControllerTest.CreateMockItems());
 
         CreateUserRequest request = new CreateUserRequest();
         request.setUsername("test");
@@ -64,37 +65,71 @@ public class CartControllerTest {
         assertNotNull(user);
         assertEquals("test", user.getUsername());
         cart = CreateMockCart(user);
-        cartRepository.save(cart);
+        cartService.save(cart);
     }
 
     @Test
-    public void add_item_to_cart() {
+    public void given_an_item_should_be_able_to_add_to_cart() {
 
         ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
         modifyCartRequest.setUsername("test");
         modifyCartRequest.setItemId(2L);
         modifyCartRequest.setQuantity(5);
-        Cart cart = cartController.addTocart(modifyCartRequest).getBody();
-        assertEquals(java.util.Optional.ofNullable(cart.getId()), java.util.Optional.of(1L));
-        assertEquals(5, cart.getItems().size());
-        assertEquals(new BigDecimal("3.95"), cart.getTotal());
+        Cart cart = cartController.addToCart(modifyCartRequest).getBody();
+        assertNotNull(cart.getId());
+        assert (cart.getItems().size() > 0);
+        assertTrue( cart.getTotal().doubleValue()>0);
+    }
+    @Test
+    public void given_an_item_should_fail_add_to_cart_not_purchased_by_user() {
+
+        ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
+        modifyCartRequest.setItemId(2L);
+        modifyCartRequest.setQuantity(5);
+        HttpStatus status = cartController.addToCart(modifyCartRequest).getStatusCode();
+        assertEquals(HttpStatus.NOT_FOUND, status);
     }
 
     @Test
-    public void remove_item_from_cart() {
+    public void given_no_user_add_item_to_cart_should_fail() {
+
+        ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
+        modifyCartRequest.setItemId(2L);
+        modifyCartRequest.setQuantity(5);
+        ResponseEntity<Cart> responseEntity = cartController.addToCart(modifyCartRequest);
+        assertEquals(404, responseEntity.getStatusCodeValue());
+
+    }
+
+    @Test
+    public void given_item_existing_in_a_cart_should_be_removable() {
 
         ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
         modifyCartRequest.setUsername("test");
         modifyCartRequest.setItemId(2L);
         modifyCartRequest.setQuantity(5);
-        Cart cart = cartController.addTocart(modifyCartRequest).getBody();
+        Cart cart = cartController.addToCart(modifyCartRequest).getBody();
         assertEquals(5, cart.getItems().size());
         assertEquals(new BigDecimal("3.95"), cart.getTotal());
         modifyCartRequest.setItemId(2L);
         modifyCartRequest.setQuantity(1);
-        cart = cartController.removeFromcart(modifyCartRequest).getBody();
+        cart = cartController.removeFromCart(modifyCartRequest).getBody();
         assertEquals(4, cart.getItems().size());
 
     }
+
+    @Test
+    public void remove_a_non_existing_item_should_fail_with_not_found_status(){
+
+        ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
+        modifyCartRequest.setUsername("test");
+        modifyCartRequest.setItemId(100L);
+        modifyCartRequest.setQuantity(5);
+        HttpStatus status = cartController.removeFromCart(modifyCartRequest).getStatusCode();
+        assertEquals(HttpStatus.NOT_FOUND, status);
+
+    }
+
+
 
 }
