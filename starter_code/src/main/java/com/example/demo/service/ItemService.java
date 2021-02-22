@@ -16,17 +16,17 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public Optional<Item> findInventoryItemById(Long id){
+    public Optional<Item> findInventoryItemById(Long id) {
 
         return itemRepository.findById(id);
 
     }
 
-    public List<Item> findInventoryItemByName(String itemName){
+    public List<Item> findInventoryItemByName(String itemName) {
         return itemRepository.findByName(itemName);
     }
 
-    public List<Item> findAllInventoryItems(){
+    public List<Item> findAllInventoryItems() {
         return itemRepository.findAll();
     }
 

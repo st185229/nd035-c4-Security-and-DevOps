@@ -8,45 +8,39 @@ import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.ItemRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
 public class OrderControllerTest {
-
     @Autowired
     private OrderController orderController;
-
     @Autowired
     private UserController userController;
-
-   @Autowired
+    @Autowired
     private ItemRepository itemRepository;
-
     @Autowired
     private CartRepository cartRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     private User loggedInUser;
-
-
 
     private static Cart CreateMockCart() {
         Cart mockCart = new Cart();
@@ -57,7 +51,7 @@ public class OrderControllerTest {
     }
 
     @Before
-    public void Setup(){
+    public void Setup() {
         itemRepository.saveAll(ItemControllerTest.CreateMockItems());
 
         CreateUserRequest request = new CreateUserRequest();
@@ -76,7 +70,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void given_user_an_order_can_be_submitted() throws NoSuchFieldException, IllegalAccessException {
+    public void given_user_an_order_can_be_submitted_and_fail_without_user() throws NoSuchFieldException, IllegalAccessException {
 
         Cart cart = CreateMockCart();
         cart.setUser(loggedInUser);
@@ -84,13 +78,16 @@ public class OrderControllerTest {
         loggedInUser.setCart(cart);
         userRepository.save(loggedInUser);
         orderController.submit(loggedInUser.getUsername());
-        List<UserOrder> orders =     orderController.getOrdersForUser(loggedInUser.getUsername()).getBody();
-        assertEquals(1,orders.size());
+        List<UserOrder> orders = orderController.getOrdersForUser(loggedInUser.getUsername()).getBody();
+        assertEquals(1, orders.size());
+        //Negative test
+        HttpStatus status = orderController.submit("invalidUser").getStatusCode();
+        Assert.assertSame(HttpStatus.NOT_FOUND, status);
 
     }
 
     @Test
-    public void get_order_for_user() {
+    public void get_order_for_valid_user_and_fail_with_invalid_user() {
 
         Cart cart = CreateMockCart();
         cart.setUser(loggedInUser);
@@ -98,14 +95,21 @@ public class OrderControllerTest {
         loggedInUser.setCart(cart);
         userRepository.save(loggedInUser);
         orderController.submit(loggedInUser.getUsername());
-        List<UserOrder> orders =     orderController.getOrdersForUser(loggedInUser.getUsername()).getBody();
-        assertEquals(1,orders.size());
+        List<UserOrder> orders = orderController.getOrdersForUser(loggedInUser.getUsername()).getBody();
+        assertEquals(1, orders.size());
 
-        assertEquals(2,orders.get(0).getItems().size());
+        UserOrder firstOrder = orders.get(0);
+
+        assertTrue(firstOrder.getId() > 0);
+        assertNotNull( firstOrder.getUser());
+        assertTrue(firstOrder.getTotal().doubleValue() >0);
+
+
+        assertEquals(2, orders.get(0).getItems().size());
         Item item = new Item(1L, "Eggs", new BigDecimal("1.23"), "Large Eggs");
-        assertEquals(item,orders.get(0).getItems().get(0));
-
+        assertEquals(item, orders.get(0).getItems().get(0));
+        HttpStatus status = orderController.getOrdersForUser("invalidUser").getStatusCode();
+        Assert.assertSame(HttpStatus.NOT_FOUND, status);
     }
-
 
 }

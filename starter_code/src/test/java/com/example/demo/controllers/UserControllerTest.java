@@ -18,8 +18,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +41,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void create_user_happy_path() {
+    public void should_be_able_to_register_a_new_valid_user() {
         when(bCryptPasswordEncoder.encode("testPassword")).thenReturn("thisIsHashed");
 
         CreateUserRequest request = new CreateUserRequest();
@@ -64,7 +63,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void find_by_id() {
+    public void a_valid_user_should_have_valid_id() {
         User mockUser = new User();
         mockUser.setUsername("test");
         mockUser.setId(1);
@@ -77,7 +76,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void find_by_userName() {
+    public void given_a_valid_user_name_should_yield_to_valid_user() {
         User mockUser = new User();
         mockUser.setUsername("test");
         mockUser.setId(1);
@@ -87,6 +86,9 @@ public class UserControllerTest {
         assertNotNull(u);
         assertEquals(1, u.getId());
         assertNotNull("test", u.getUsername());
+        Long nonExistingId = 1000l;
+        assertNull( userController.findById(nonExistingId).getBody());
+
     }
 
 }

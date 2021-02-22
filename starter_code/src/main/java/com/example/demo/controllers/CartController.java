@@ -30,12 +30,12 @@ public class CartController {
 
     ////Suresh  Refactored the duplicate code
     @PostMapping("/addToCart")
-    public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
+    public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) {
         return updateCart(request, false);
     }
 
     @PostMapping("/removeFromCart")
-    public ResponseEntity<Cart> removeFromcart(@RequestBody ModifyCartRequest request) {
+    public ResponseEntity<Cart> removeFromCart(@RequestBody ModifyCartRequest request) {
         return updateCart(request, true);
     }
 
