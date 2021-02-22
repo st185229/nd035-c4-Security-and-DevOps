@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -78,6 +79,17 @@ public class CartControllerTest {
         assertEquals(java.util.Optional.ofNullable(cart.getId()), java.util.Optional.of(1L));
         assertEquals(5, cart.getItems().size());
         assertEquals(new BigDecimal("3.95"), cart.getTotal());
+    }
+
+    @Test
+    public void given_no_user_add_item_to_cart_should_fail() {
+
+        ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
+        modifyCartRequest.setItemId(2L);
+        modifyCartRequest.setQuantity(5);
+        ResponseEntity<Cart> responseEntity = cartController.addTocart(modifyCartRequest);
+        assertEquals(404, responseEntity.getStatusCodeValue());
+
     }
 
     @Test

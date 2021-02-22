@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.model.persistence.Item;
-import com.example.demo.model.persistence.repositories.ItemRepository;
 import com.example.demo.service.ItemService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,6 +60,15 @@ public class ItemControllerTest {
         assert item != null;
         Long id = item.getId();
         Assert.assertEquals(java.util.Optional.of(1L), java.util.Optional.ofNullable(id));
+
+        Item itemExpected = new Item();
+        itemExpected.setId(1L);
+        itemExpected.setName("Eggs");
+        itemExpected.setDescription("Large Eggs");
+        itemExpected.setPrice(new BigDecimal("1.23"));
+        Assert.assertEquals(itemExpected, item);
+        Assert.assertEquals("Eggs",item.getName());
+
     }
 
     @Test
