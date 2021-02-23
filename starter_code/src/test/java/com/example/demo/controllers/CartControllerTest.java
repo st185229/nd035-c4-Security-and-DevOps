@@ -20,7 +20,8 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -78,8 +79,9 @@ public class CartControllerTest {
         Cart cart = cartController.addToCart(modifyCartRequest).getBody();
         assertNotNull(cart.getId());
         assert (cart.getItems().size() > 0);
-        assertTrue( cart.getTotal().doubleValue()>0);
+        assertTrue(cart.getTotal().doubleValue() > 0);
     }
+
     @Test
     public void given_an_item_should_fail_add_to_cart_not_purchased_by_user() {
 
@@ -119,7 +121,7 @@ public class CartControllerTest {
     }
 
     @Test
-    public void remove_a_non_existing_item_should_fail_with_not_found_status(){
+    public void remove_a_non_existing_item_should_fail_with_not_found_status() {
 
         ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
         modifyCartRequest.setUsername("test");
@@ -129,7 +131,6 @@ public class CartControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, status);
 
     }
-
 
 
 }
