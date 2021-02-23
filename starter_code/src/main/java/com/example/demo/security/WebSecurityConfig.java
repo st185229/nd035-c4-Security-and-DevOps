@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         log.info("The white listed URLs which does not need auth are signupURL={} and Inventory Catalogue={}",
                 SecurityConstants.SIGN_UP_URL, SecurityConstants.CATALOGUE_RUL);
         http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.GET, SecurityConstants.ROOT_URL).permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstants.CATALOGUE_RUL).permitAll() //Should be able to browse inventory without login
                 .anyRequest().authenticated()
