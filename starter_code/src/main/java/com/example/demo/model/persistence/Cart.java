@@ -10,75 +10,72 @@ import java.util.List;
 @Entity
 @Table(name = "cart")
 public class Cart {
-	@Override
-	public String toString() {
-		return "Cart{" +
-				"id=" + id +
-				", items=" + items +
-				", user=" + user +
-				", total=" + total +
-				'}';
-	}
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty
-	@Column
-	private Long id;
-	
-	@ManyToMany
-	@JsonProperty
-	@Column
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
+    @Column
+    private Long id;
+    @ManyToMany
+    @JsonProperty
+    @Column
     private List<Item> items;
-	
-	@OneToOne(mappedBy = "cart")
-	@JsonProperty
+    @OneToOne(mappedBy = "cart")
+    @JsonProperty
     private User user;
-	
-	@Column
-	@JsonProperty
-	private BigDecimal total;
-	
-	public BigDecimal getTotal() {
-		return total;
-	}
+    @Column
+    @JsonProperty
+    private BigDecimal total;
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", items=" + items +
+                ", user=" + user +
+                ", total=" + total +
+                '}';
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
 
 
-	public User getUser() {
-		return user;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public List<Item> getItems() {
-		return items;
-	}
+    public List<Item> getItems() {
+        return items;
+    }
 
-	public void addItem(Item item) {
-		if(items == null) {
-			items = new ArrayList<>();
-		}
-		items.add(item);
-		if(total == null) {
-			total = new BigDecimal(0);
-		}
-		total = total.add(item.getPrice());
-	}
-	
-	public void removeItem(Item item) {
-		if(items == null) {
-			items = new ArrayList<>();
-		}
-		items.remove(item);
-		if(total == null) {
-			total = new BigDecimal(0);
-		}
-		total = total.subtract(item.getPrice());
-	}
+    public void addItem(Item item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        items.add(item);
+        if (total == null) {
+            total = new BigDecimal(0);
+        }
+        total = total.add(item.getPrice());
+    }
+
+    public void removeItem(Item item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        items.remove(item);
+        if (total == null) {
+            total = new BigDecimal(0);
+        }
+        total = total.subtract(item.getPrice());
+    }
 }

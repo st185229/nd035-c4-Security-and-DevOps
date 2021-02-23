@@ -1,13 +1,10 @@
 package com.example.demo.security;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.model.persistence.User;
-import com.example.demo.service.UserService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -21,7 +18,6 @@ import java.util.ArrayList;
 
 @Log4j2
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
 
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
@@ -51,7 +47,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .verify(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
                     .getSubject();
 
-            if(user == null){
+            if (user == null) {
                 log.error("Login failed, user couldn't be authorised");
                 throw new RuntimeException("User does not exists");
             }

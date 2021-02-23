@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class CartService {
     private final CartRepository cartRepository;
+
     public CartService(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
-    public void save(Cart cart){
-        log.debug("The cart to be saved={}",cart);
+
+    public void save(Cart cart) {
+        log.debug("The cart to be saved={}", cart);
         cartRepository.save(cart);
     }
 }

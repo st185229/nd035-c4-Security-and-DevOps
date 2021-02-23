@@ -101,8 +101,8 @@ public class OrderControllerTest {
         UserOrder firstOrder = orders.get(0);
 
         assertTrue(firstOrder.getId() > 0);
-        assertNotNull( firstOrder.getUser());
-        assertTrue(firstOrder.getTotal().doubleValue() >0);
+        assertNotNull(firstOrder.getUser());
+        assertTrue(firstOrder.getTotal().doubleValue() > 0);
 
 
         assertEquals(2, orders.get(0).getItems().size());

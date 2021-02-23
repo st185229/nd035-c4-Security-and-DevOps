@@ -27,7 +27,7 @@ public class UserController {
     @GetMapping("/id/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         var user = userService.findById(id);
-        if(user== null){
+        if (user == null) {
             log.error("Invalid user");
             return ResponseEntity.notFound().build();
         }
@@ -38,13 +38,14 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<User> findByUserName(@PathVariable String username) {
         User user = userService.findByUsername(username);
-        if(user== null){
+        if (user == null) {
             log.error("Invalid user");
             return ResponseEntity.notFound().build();
         }
         log.debug("The user with user name={} is {}", username, user);
         return ResponseEntity.ok(user);
     }
+
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
         User user = new User();
@@ -68,7 +69,7 @@ public class UserController {
         user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getConfirmPassword()));
         userService.save(user);
         log.debug("User userName={} is created successfully", userName);
-        log.info("User created={}",user);
+        log.info("User created={}", user);
         return ResponseEntity.ok(user);
     }
 

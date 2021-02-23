@@ -11,32 +11,19 @@ import java.util.List;
 @Table(name = "user_order")
 public class UserOrder {
 
-    @Override
-    public String toString() {
-        return "UserOrder{" +
-                "id=" + id +
-                ", items=" + items +
-                ", user=" + user +
-                ", total=" + total +
-                '}';
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
     @Column
     private Long id;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonProperty
     @Column
     private List<Item> items;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     @JsonProperty
     private User user;
-
     @JsonProperty
     @Column
     private BigDecimal total;
@@ -47,6 +34,16 @@ public class UserOrder {
         order.setTotal(cart.getTotal());
         order.setUser(cart.getUser());
         return order;
+    }
+
+    @Override
+    public String toString() {
+        return "UserOrder{" +
+                "id=" + id +
+                ", items=" + items +
+                ", user=" + user +
+                ", total=" + total +
+                '}';
     }
 
     public Long getId() {

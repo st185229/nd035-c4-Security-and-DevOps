@@ -32,10 +32,10 @@ public class UserControllerTest {
 
     @Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
-        userController = new UserController(bCryptPasswordEncoder,userService,cartService);
-       // TestUtils.injectObjects(userController, "userService", userService);
-       // TestUtils.injectObjects(userController, "cartService", cartService);
-       // TestUtils.injectObjects(userController, "bCryptPasswordEncoder", bCryptPasswordEncoder);
+        userController = new UserController(bCryptPasswordEncoder, userService, cartService);
+        // TestUtils.injectObjects(userController, "userService", userService);
+        // TestUtils.injectObjects(userController, "cartService", cartService);
+        // TestUtils.injectObjects(userController, "bCryptPasswordEncoder", bCryptPasswordEncoder);
 
     }
 
@@ -87,7 +87,7 @@ public class UserControllerTest {
         assertEquals(1, u.getId());
         assertNotNull("test", u.getUsername());
         Long nonExistingId = 1000l;
-        assertNull( userController.findById(nonExistingId).getBody());
+        assertNull(userController.findById(nonExistingId).getBody());
 
     }
 

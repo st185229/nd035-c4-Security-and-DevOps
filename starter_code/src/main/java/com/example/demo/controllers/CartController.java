@@ -35,17 +35,17 @@ public class CartController {
     ////Suresh  Refactored the duplicate code
     @PostMapping("/addToCart")
     public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) {
-        log.info("addToCart request={}",request);
+        log.info("addToCart request={}", request);
         log.debug("Add to cart userName={}, itemId={}, quantity={}",
-                request.getUsername(),request.getItemId(), request.getQuantity());
+                request.getUsername(), request.getItemId(), request.getQuantity());
         return updateCart(request, false);
     }
 
     @PostMapping("/removeFromCart")
     public ResponseEntity<Cart> removeFromCart(@RequestBody ModifyCartRequest request) {
-        log.info("remove from cart request={}",request);
+        log.info("remove from cart request={}", request);
         log.debug("Modify cart cart userName={}, itemId={}, quantity={}",
-                request.getUsername(),request.getItemId(), request.getQuantity());
+                request.getUsername(), request.getItemId(), request.getQuantity());
         return updateCart(request, true);
     }
 
@@ -53,13 +53,13 @@ public class CartController {
         User user = userService.findByUsername(request.getUsername());
         if (user == null) {
             log.error("User does not exists userName={}, itemId={}, quantity={}",
-                    request.getUsername(),request.getItemId(), request.getQuantity());
+                    request.getUsername(), request.getItemId(), request.getQuantity());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Optional<Item> item = itemService.findInventoryItemById(request.getItemId());
         if (item.isEmpty()) {
             log.error("Item is not present userName={}, itemId={}, quantity={}",
-                    request.getUsername(),request.getItemId(), request.getQuantity());
+                    request.getUsername(), request.getItemId(), request.getQuantity());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Cart cart = user.getCart();
@@ -73,7 +73,7 @@ public class CartController {
         cartService.save(cart);
         log.debug("Cart saved successfully cartId={}, user={},total={}"
                 , cart.getId(), cart.getUser(), cart.getTotal());
-        log.info("cart={}",cart);
+        log.info("cart={}", cart);
         return ResponseEntity.ok(cart);
 
     }

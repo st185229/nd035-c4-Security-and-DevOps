@@ -3,46 +3,42 @@ package com.example.demo.model.requests;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CreateUserRequest {
-	@Override
-	public String toString() {
-		return "CreateUserRequest{" +
-				"username='" + username + '\'' +
-				", password='" + password + '\'' +
-				", confirmPassword='" + confirmPassword + '\'' +
-				'}';
-	}
+    @JsonProperty
+    private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+    private String confirmPassword;
 
-	public String getPassword() {
-		return password;
-	}
+    @Override
+    public String toString() {
+        return "CreateUserRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                '}';
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
-	}
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
 
-	@JsonProperty
-	private String username;
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String password;
+    public String getUsername() {
+        return username;
+    }
 
-	private String confirmPassword;
-
-
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

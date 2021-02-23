@@ -12,11 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -86,6 +84,7 @@ public class UserAuthTest {
                         .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     public void given_small_password_to_register_fails() throws Exception {
 
@@ -100,7 +99,7 @@ public class UserAuthTest {
     }
 
 
-        @Test
+    @Test
     public void given_user_cannot_access_apis_without_bearer_jwt() throws Exception {
         // Access user profile without access token - negative test
         String json = "{\"username\": \"Suresh\",\"password\" : \"pass12345678\"}";
