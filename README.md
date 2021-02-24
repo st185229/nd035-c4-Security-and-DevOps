@@ -78,3 +78,18 @@ and that should, if those are valid credentials, return a 200 OK with an Authori
 
 ## Testing
 You must implement unit tests demonstrating at least 80% code coverage.
+
+### Docker 
+#### Build the docker file
+mvn docker:build
+Note, the below maven plug in to create 
+<groupId>io.fabric8</groupId>
+<artifactId>docker-maven-plugin</artifactId>
+
+#### Run the docker file
+docker run -p 9999:8080 auth-course:0.0.1.0
+#### Health checking
+http://localhost:9999/udacity/api 
+
+#### Swaggar
+http://localhost:9999/udacity/swagger-ui.html#/

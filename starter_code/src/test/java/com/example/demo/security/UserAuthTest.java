@@ -133,6 +133,16 @@ public class UserAuthTest {
                 .andExpect(status().isForbidden());
 
     }
+    @Test
+    public void able_verify_application_running_ok_by_going_to_home_url() throws Exception {
+
+        mvc.perform(
+                get(new URI("/api"))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+    }
 
 
 }

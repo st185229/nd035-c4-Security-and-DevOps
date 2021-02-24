@@ -13,6 +13,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 
+import static springfox.documentation.builders.PathSelectors.regex;
+
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
@@ -20,20 +22,12 @@ public class Swagger2Config {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.example.demo.controllers"))
+                .paths(regex("/api.*"))
                 .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
+                .build();
+
     }
 
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Sareeta Ecommerce API",
-                "Ecommerce API , Udaicty Project",
-                "0.1-alpa",
-                "http://www.udacity.com/tos",
-                new Contact("Suresh Thomas", "www.udacity.com", "suresh.thomas@email-private.com"),
-                "License of API", "http://www.udacity.com/license", Collections.emptyList());
-    }
 
 }

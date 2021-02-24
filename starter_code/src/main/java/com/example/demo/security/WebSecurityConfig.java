@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,16 +32,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        log.info("The white listed URLs which does not need auth are signupURL={} and Inventory Catalogue={}",
-                SecurityConstants.SIGN_UP_URL, SecurityConstants.CATALOGUE_RUL);
+        log.info("The white listed URLs which does not need auth are signupURL={} and Inventory Catalogue={}", SecurityConstants.SIGN_UP_URL, SecurityConstants.CATALOGUE_URL);
         http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.GET, SecurityConstants.ROOT_URL).permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.GET, SecurityConstants.CATALOGUE_RUL).permitAll() //Should be able to browse inventory without login
+                .antMatchers(HttpMethod.GET, SecurityConstants.CATALOGUE_URL).permitAll() //Should be able to browse inventory without login
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), getApplicationContext()))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+    //Allow swaggar
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
     }
 
     @Override

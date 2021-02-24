@@ -37,6 +37,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
+          <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -85,7 +86,14 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <version>2.6.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -110,6 +118,7 @@
 
     </dependencies>
     <build>
+       <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -161,6 +170,53 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.34.1</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>auth-course:0.0.1.0</name>
+                            <alias>dockerfile</alias>
+                            <build>
+                                <!-- filter>@</filter-->
+                                <contextDir>${project.basedir}</contextDir>
+                                <assembly>
+                                    <descriptorRef>rootWar</descriptorRef>
+                                </assembly>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <path>/</path>
+                    <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
+                </configuration>
+                <executions>
+                <execution>
+                    <id>tomcat-run</id>
+                    <goals>
+                        <goal>exec-war-only</goal>
+                    </goals>
+                    <phase>package</phase>
+                    <configuration>
+                        <path>/</path>
+                        <!-- optional, needed only if you want to use a preconfigured server.xml file -->
+                        <serverXml>src/main/tomcatconf/server.xml</serverXml>
+                        <!-- optional values which can be configurable -->
+                        <!--<attachArtifactClassifier>default value is exec-war but you can customize</attachArtifactClassifier>
+                        <attachArtifactClassifierType>default value is jar</attachArtifactClassifierType>-->
+                    </configuration>
+                </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
     <pluginRepositories>
