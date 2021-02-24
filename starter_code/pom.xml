@@ -187,10 +187,6 @@
                                 </assembly>
                             </build>
                             <run>
-                                <env>
-                                    <CATALINA_OPTS>-Xmx32m</CATALINA_OPTS>
-                                    <JOLOKIA_OFF/>
-                                </env>
                                 <labels>
                                     <environment>development</environment>
                                     <version>${project.version}</version>

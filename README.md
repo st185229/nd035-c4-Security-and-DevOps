@@ -93,3 +93,6 @@ http://localhost:9999/udacity/api
 
 #### Swaggar
 http://localhost:9999/udacity/swagger-ui.html#/
+
+http://master:8888/udacity/api/item/1
+http://master:8888/udacity/swagger-ui.html#/home-controller
