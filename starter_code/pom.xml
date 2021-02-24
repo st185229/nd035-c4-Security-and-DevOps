@@ -186,6 +186,28 @@
                                     <descriptorRef>rootWar</descriptorRef>
                                 </assembly>
                             </build>
+                            <run>
+                                <env>
+                                    <CATALINA_OPTS>-Xmx32m</CATALINA_OPTS>
+                                    <JOLOKIA_OFF/>
+                                </env>
+                                <labels>
+                                    <environment>development</environment>
+                                    <version>${project.version}</version>
+                                </labels>
+                                <ports>
+                                    <port>9999:8080</port>
+                                </ports>
+                                <securityOpts>
+                                    <opt>seccomp=unconfined</opt>
+                                </securityOpts>
+                                <log>
+                                    <prefix>DEMO</prefix>
+                                    <date>ISO8601</date>
+                                    <color>blue</color>
+                                </log>
+                            </run>
+
                         </image>
                     </images>
                 </configuration>
