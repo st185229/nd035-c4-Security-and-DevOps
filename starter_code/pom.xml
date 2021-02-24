@@ -186,11 +186,6 @@
                                     <descriptorRef>rootWar</descriptorRef>
                                 </assembly>
                             </build>
-                            <run>
-                                <ports>
-                                    <port>8989:8080</port>
-                                </ports>
-                            </run>
                         </image>
                     </images>
                 </configuration>
