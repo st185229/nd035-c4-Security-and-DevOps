@@ -25,18 +25,9 @@ public class Swagger2Config {
                 .apis(RequestHandlerSelectors.basePackage("com.example.demo.controllers"))
                 .paths(regex("/api.*"))
                 .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
+                .build();
+
     }
 
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Sareeta Ecommerce API",
-                "Ecommerce API , Udaicty Project",
-                "0.1-alpa",
-                "http://www.udacity.com/tos",
-                new Contact("Suresh Thomas", "www.udacity.com", "suresh.thomas@email-private.com"),
-                "License of API", "http://www.udacity.com/license", Collections.emptyList());
-    }
 
 }
