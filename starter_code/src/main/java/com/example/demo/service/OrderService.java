@@ -20,7 +20,7 @@ public class OrderService {
     public void save(UserOrder order) {
 
         orderRepository.save(order);
-        log.debug("The order saved order={}", order);
+        log.debug("The order created for userName={} order={} total value={}", order.getUser(), order.getId(), order.getTotal());
     }
 
     public List<UserOrder> findByUser(User user) {

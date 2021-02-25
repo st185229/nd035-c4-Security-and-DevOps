@@ -1,7 +1,5 @@
 package com.example.demo.model.requests;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ModifyCartRequest {
     @JsonProperty
     private String username;
@@ -9,7 +7,6 @@ public class ModifyCartRequest {
     private long itemId;
     @JsonProperty
     private int quantity;
-
     @Override
     public String toString() {
         return "ModifyCartRequest{" +
@@ -18,7 +15,6 @@ public class ModifyCartRequest {
                 ", quantity=" + quantity +
                 '}';
     }
-
     public String getUsername() {
         return username;
     }

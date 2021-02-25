@@ -25,17 +25,23 @@ public class OrderController {
 
     @PostMapping("/submit/{username}")
     public ResponseEntity<UserOrder> submit(@PathVariable String username) {
+        log.info("Order being requested for the user ={}", username);
         User user = userService.findByUsername(username);
         if (user == null) {
             log.error("Invalid user for creating order userName={}", username);
             return ResponseEntity.notFound().build();
         }
+        var cart = user.getCart();
+        if(cart.getItems().isEmpty()){
+            log.error("The cart is empty for userName={}", username);
+            return ResponseEntity.notFound().build();
+        }
         UserOrder order = UserOrder.createFromCart(user.getCart());
         orderService.save(order);
-        log.info("Submit Order={}", order);
+        log.info("A order has been created successfully with  id={} for the user ={} with total of {}",
+                order.getId(), order.getUser(), order.getTotal());
         return ResponseEntity.ok(order);
     }
-
     @GetMapping("/history/{username}")
     public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
         User user = userService.findByUsername(username);
