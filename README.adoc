@@ -1,23 +1,25 @@
 = eCommerce Application Project Report
 
-This project is the final implementation to demonstrate 
+This project is the final implementation to demonstrate Scurity and DevOps skills that you learned in this lesson by completing an eCommerce application. A BCrypt encryption of password and JWT security based on https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/[auth0] is implemented.
 
 . Unit testing with coverage
 . Using Git practices such as .gitignore &amp; branching
 . Unit testing with a specific amount of coverage
 . Logging
 . Interpretation of logging with Splunk
+. CI & CD with Jenkins
 
-In this project, you'll have an opportunity to demonstrate the security and DevOps skills that you learned in this lesson by completing an eCommerce application.
-You'll start with a template for the complete application, and your goal will be to take this template and add proper authentication and authorization controls so users can only access their data, and that data can only be accessed in a secure way
+== Changes to the Project Template
 
-== Project Template
+The original template is written in Java using Spring Boot, Hibernate ORM, and the H2 database. H2 is an in memory database, so if you need to retry something, every application startup is a fresh copy.
 
-First, you'll want to get set up with the template. The template is written in Java using Spring Boot, Hibernate ORM, and the H2 database. H2 is an in memory database, so if you need to retry something, every application startup is a fresh copy.
+* Instead of continue using outdated(still commercially supported) Java 8, the project has been upgraded to java 11
+* Replaced the springboot started logging with log4j2. Instead of using sl4j wrapper, the log4J provides its own APIs
+* Swagger has been added , whitelisted the URL - http://localhost:9999/udacity/swagger-ui.html#/ so that it can be accessed
+* https://www.eclemma.org/jacoco/[jacoco] has been added to Junit test coverage reporting
+* https://fabric8.io/[Fabric8]'s docker maven https://github.com/fabric8io/docker-maven-plugin[plugin] has been added to create container image as well as run the containers in the Jenkins CD
 
-To use the template, import it in the IDE of your choice as a Spring Boot application. Where required, this readme assumes the eclipse IDE.
-
-Once the project is set up, you will see 5 packages:
+The code has been refactored to add a service layer . So Once the project is set up, you will see 5 packages:
 
 * demo - this package contains the main method which runs the application
 
@@ -29,17 +31,39 @@ Once the project is set up, you will see 5 packages:
 
 * controllers - these contain the api endpoints for our app, 1 per model. Note they all have the `@RestController` annotation to allow Spring to understand that they are a part of a REST API
 
+* *_New_*  openapi  This is where swagger.io configurations are stored
+
+* Security
+
+The security has 4 classes
+
+|===
+|No |Class Name |Purpose
+
+|1
+|JWTAuthenticationFilter
+|This  is an implementation of UsernamePasswordAuthenticationFilter. This authenticates the users including all pre and post authentication tasks
+
+|2
+|JWTAuthorizationFilter
+|This class implements filter chains which query for JWT  token in the header (Bearer). This also checks whether the subject of the token actually represents the user
+
+|3
+|WebSecurityConfig
+|Its an implementation of WebSecurityConfigurerAdapter configure login
+|===
+
+
 In resources, you'll see the application configuration that sets up our database and Hibernate, It also contains a data.sql file with a couple of items to populate the database with. Spring will run this file every time the application starts
 
-In eclipse, you can right click the project and click “run as” and select Spring Boot application. The application should tell you it’s starting in the console view. Once started, using a REST client, such as Postman, explore the APIs.
 
-Some examples are as below:
-To create a new user for example, you would send a POST request to:
 http://localhost:8080/api/user/create with an example body like 
 
 ----
 {
-    "username": "test"
+    "username": "usertest",
+    "password" : "pass12345678",
+    "confirmPassword": "pass12345678"
 }
 
 ----
@@ -48,34 +72,14 @@ and this would return
 
 ----
 {
-    "id" 1,
-    "username": "test"
+    "id": 2,
+    "username": "usertest"
 }
 ----
 
-Exercise:
-Once you've created a user, try to add items to cart (see the `ModifyCartRequest` class) and submit an order. 
-
-== Adding Authentication and Authorization
-
-We need to add proper authentication and authorization controls so users can only access their data, and that data can only be accessed in a secure way. We will do this using a combination of usernames and passwords for authentication, as well as JSON Web Tokens (JWT) to handle the authorization.
-
-As stated prior, we will implement a password based authentication scheme. To do this, we need to store the users' passwords in a secure way. This needs to be done with hashing, and it's this hash which should be stored. Additionally when viewing their user information, the user's hash should not be returned to them in the response, You should also add some requirements and validation, as well as a confirm field in the request, to make sure they didn't make a typo. 
-
-. Add spring security dependencies:
-* Spring-boot-starter-security
-. JWT does not ship as a part of spring security, so you will have to add the
-* java-jwt dependency to your project.
-. Spring Boot ships with an automatically configured security module that must be disabled, as we will be implementing our own. This must be done in the Application class.
-. Create password for the user
-. Once that is disabled, you will need to implement 4 classes (at minimum, you can break it down however you like):
-* a subclass of `UsernamePasswordAuthenticationFilter` for taking the username and password from a login request and logging in. This, upon successful authentication, should hand back a valid JWT in the `Authorization` header
-* a subclass of `BasicAuthenticationFilter`.
-* an implementation of the `UserDetailsService` interface. This should take a username and return a userdetails User instance with the user's username and hashed password.
-* a subclass of `WebSecurityConfigurerAdapter`. This should attach your user details service implementation to Spring's `AuthenticationManager`. It also handles session management and what endpoints are secured. For us, we manage the session so session management should be disabled. Your filters should be added to the authentication chain and every endpoint but 1 should have security required. The one that should not is the one responsible for creating new users.
-
-Once all this is setup, you can use Spring's default /login endpoint to login like so
-
+== Access restricted and allowed endpoints
+=== Allowed
+==== Login
 ----
 POST /login 
 {
@@ -83,33 +87,53 @@ POST /login
     "password": "somepassword"
 }
 ----
+----
+GET http://localhost:8080/api
+----
+----
+GET http://localhost:8080/api/item/
+----
+----
+GET http://localhost:8080/api/item/1
+----
+Others related to swaggar
+----
+/v2/api-docs",
+"/configuration/ui",
+"/swagger-ui.html"
+----
 
 and that should, if those are valid credentials, return a 200 OK with an Authorization header which looks like "Bearer <data>" this "Bearer <data>" is a JWT and must be sent as a Authorization header for all other rqeuests. If it's not present, endpoints should return 401 Unauthorized. If it's present and valid, the endpoints should function as normal.
 
 == Testing
 
-You must implement unit tests demonstrating at least 80% code coverage.
+There are 21 test cases been created to assure 92% coverage
+image::splunk_reports/Coverage-unit test.png[alt="Coverage"]
+This has been organised under a test suit . Can be executed to through maven goals such _test_ , _verify_ etc
+image::splunk_reports/unit-test-execution.png[alt="test execution"]
 
 === Docker
-
-==== Build the docker file
-
-mvn docker:build
-Note, the below maven plug in to create
+A maven plugin https://github.com/fabric8io/docker-maven-plugin[fabric8] is used to create and run docker images
+----
 <groupId>io.fabric8</groupId>
 <artifactId>docker-maven-plugin</artifactId>
-
+----
+See the POM file for details.
+The dockerfile is below
+----
+# we are extending everything from tomcat:9.0 image ...
+FROM tomcat:9.0.43-jdk11-openjdk
+MAINTAINER Suresh Thomas
+EXPOSE 8080
+# COPY path-to-your-application-war path-to-webapps-in-docker-tomcat
+ADD target/${project.artifactId}.war /usr/local/tomcat/webapps/udacity.war
+CMD ["catalina.sh","run"]
+----
+==== Build the docker file from Maven
+----
+mvn docker:build
+----
 ==== Run the docker file
 
 docker run -p 9999:8080 auth-course:0.0.1.0
 
-==== Health checking
-
-http://localhost:9999/udacity/api 
-
-==== Swaggar
-
-http://localhost:9999/udacity/swagger-ui.html#/
-
-http://master:8888/udacity/api/item/1
-http://master:8888/udacity/swagger-ui.html#/home-controller
