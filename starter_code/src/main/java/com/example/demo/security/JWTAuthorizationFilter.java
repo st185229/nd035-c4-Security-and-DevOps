@@ -51,12 +51,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 log.error("Login failed, user couldn't be authorised");
                 throw new RuntimeException("User does not exists");
             }
-            if (user != null) {
-                log.debug("Login  successful");
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-            }
-            log.error("Login failed, user couldn't be authorised");
-            return null;
+            log.debug("Login  successful");
+            return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
         }
         log.error("Login failed, user couldn't be authorised");
         return null;

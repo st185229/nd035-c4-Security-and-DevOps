@@ -28,11 +28,9 @@ public class Item {
         this.price = price;
         this.description = description;
     }
-
     public Item() {
 
     }
-
     @Override
     public String toString() {
         return "Item{" +
@@ -42,7 +40,6 @@ public class Item {
                 ", description='" + description + '\'' +
                 '}';
     }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -50,7 +47,6 @@ public class Item {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -64,31 +60,24 @@ public class Item {
             return other.id == null;
         } else return id.equals(other.id);
     }
-
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public BigDecimal getPrice() {
         return price;
     }
-
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }

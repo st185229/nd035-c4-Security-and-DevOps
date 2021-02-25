@@ -27,7 +27,7 @@ public class UserController {
     @GetMapping("/id/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         var user = userService.findById(id);
-        if (user == null) {
+        if (user.isEmpty()) {
             log.error("Invalid user");
             return ResponseEntity.notFound().build();
         }
@@ -45,7 +45,6 @@ public class UserController {
         log.debug("The user with user name={} is {}", username, user);
         return ResponseEntity.ok(user);
     }
-
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
         User user = new User();

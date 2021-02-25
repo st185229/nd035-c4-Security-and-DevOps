@@ -1,5 +1,4 @@
 package com.example.demo.security;
-
 import com.example.demo.service.UserDetailsServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 @EnableWebSecurity
 @Configuration
 @Log4j2
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final UserDetailsServiceImpl userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -29,7 +26,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         log.info("The white listed URLs which does not need auth are signupURL={} and Inventory Catalogue={}", SecurityConstants.SIGN_UP_URL, SecurityConstants.CATALOGUE_URL);
@@ -43,9 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-    //Allow swaggar
+    //Allow swagger
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
@@ -53,20 +49,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui.html",
                 "/webjars/**");
     }
-
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.parentAuthenticationManager(super.authenticationManagerBean())
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder);
     }
-
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         log.info("Setting cors config");
