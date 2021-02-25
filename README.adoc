@@ -139,3 +139,98 @@ mvn docker:build
 
 docker run -p 9999:8080 auth-course:0.0.1.0
 
+=== Git process
+All development work is done a dev branch, the code is committed and pushed to dev. The merge of code into master/main is done through pull request(PR). A .ignore file removes build, log and IDE files.
+
+=== Metrics dashboard and Alerts
+==== Log4J configuration
+POM file, the below dependencies are added
+----
+<dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <version>2.1.5.RELEASE</version>
+        </dependency>
+----
+Examples of annotations on classes and statements. The annotation has dependency on lombok , but it takes away the boiler-plate code to declare logger in each class
+----
+@RestController
+@Log4j2
+@RequestMapping("/api/cart")
+public class OrderController {
+    private final UserService userSer
+..
+..
+..
+log.info("A order has been created successfully with  id={} for the user ={} with total of {}",
+                order.getId(), order.getUser(), order.getTotal());
+..
+..
+----
+The log4 j pattern used here below
+----
+  Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+----
+==== Splunk
+The Splunk Enterprise  Version:8.0.6 trial version is used for search and reporting of application logs
+A single index,  _udacity_ is created and all files are loaded to the index. No forwarders or receivers are used here.
+
+The  correct metrics to log been identified, to monitor the system and Index metrics to Splunk.
+
+===== 1. CreateUser request successes
+
+image::splunk_reports/UsercreatedSuccessfully.png[alt="Successful user creation"]
+
+Another example below
+
+image::splunk_reports/CreateUser request successes.png[alt="Successful user creation - with annotation"]
+
+===== 2. CreateUser request fails
+The below image shows failure of use creation due to password length
+
+image::splunk_reports/CreateUser request failures.png[alt="failed user creation - Password length"]
+
+==== 3. Exceptions
+The below images shows an exception query
+
+image::splunk_reports/Exceptions.png[alt="Exceptions"]
+
+All errors and debug messages below
+
+image::splunk_reports/2021-02-24_23-34-46_ERROR_DEBUG.png[alt="Exceptions"]
+
+All security related events here
+
+image::splunk_reports/AlertSecurityEvents.png[alt="Security Events"]
+
+==== 3.1 Other docs
+
+link:splunk_reports/all_events-2021-02-24_withIndexUdacity.pdf[All Events]
+
+link:splunk_reports/Errorsinlast24hoursHTMLSplunk.pdf[Errors in last 24 hrs]
+
+link:splunk_reports/Exceptionsinthelast4hours.pdf[Exceptions in the last 4 hrs]
+
+==== 4. Order request success
+
+link:splunk_reports/Order_success.pdf[ Order success]
+
+==== 5. Order Failure
+
+link:splunk_reports/OrderFailure.pdf[Order failure]
+
+==== 5.bOrder progress reports
+
+image::splunk_reports/OrderWithTime.png[alt="Order with time"]
+
+==== 6. Alerts and Dashboards
+
+
+
+
+
+
