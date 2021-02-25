@@ -106,10 +106,12 @@ Others related to swaggar
 and that should, if those are valid credentials, return a 200 OK with an Authorization header which looks like "Bearer <data>" this "Bearer <data>" is a JWT and must be sent as a Authorization header for all other rqeuests. If it's not present, endpoints should return 401 Unauthorized. If it's present and valid, the endpoints should function as normal.
 
 == Testing
+There are 21 test cases been created to assure 92% coverage as shown below
 
-There are 21 test cases been created to assure 92% coverage
 image::splunk_reports/Coverage-unit test.png[alt="Coverage"]
+
 This has been organised under a test suit . Can be executed to through maven goals such _test_ , _verify_ etc
+
 image::splunk_reports/unit-test-execution.png[alt="test execution"]
 
 === Docker
