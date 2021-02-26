@@ -57,7 +57,7 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Optional<Item> item = itemService.findInventoryItemById(request.getItemId());
-        if (item.isEmpty()) {
+        if (!item.isPresent()) {
             log.error("Item is not present userName={}, itemId={}, quantity={}",
                     request.getUsername(), request.getItemId(), request.getQuantity());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
