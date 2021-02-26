@@ -303,6 +303,7 @@ image::splunk_reports/AlertSecurityEvents.png[alt="Security Events"]
 image::splunk_reports/AlertSetup.png[alt="Alert Setup"]
 
 ***** Dashboards
+
 image::splunk_reports/Dashboards.png[alt="Dashboards"]
 
 ====
