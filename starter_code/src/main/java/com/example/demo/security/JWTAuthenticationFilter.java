@@ -2,8 +2,8 @@ package com.example.demo.security;
 
 import com.auth0.jwt.JWT;
 import com.example.demo.model.persistence.User;
-import com.example.demo.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,23 +23,18 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 @Log4j2
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, org.springframework.context.ApplicationContext ctx) {
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.userService = ctx.getBean(UserService.class);
+        super.setAuthenticationFailureHandler(new JWTAuthenticationFailureHandler());
     }
 
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
-        try {
             User credentials = new ObjectMapper().readValue(req.getInputStream(), User.class);
-
-            if (userService.findByUsername(credentials.getUsername()) == null) {
-                log.debug("Authentication Failed, User userName={} does not exists", credentials.getUsername());
-                throw new RuntimeException("The user does not exists");
-            }
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -48,11 +43,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             new ArrayList<>()));
 
 
-        } catch (AuthenticationException | IOException e) {
-            log.debug("Authentication Failed");
-
-            throw new RuntimeException(e);
-        }
     }
 
     //After successful login, create JWT and set as Bearer token
