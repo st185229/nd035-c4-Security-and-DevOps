@@ -23,11 +23,12 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 @Log4j2
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+   // private final UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, org.springframework.context.ApplicationContext ctx) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager/*, org.springframework.context.ApplicationContext ctx*/) {
         this.authenticationManager = authenticationManager;
-        this.userService = ctx.getBean(UserService.class);
+      //  this.userService = ctx.getBean(UserService.class);
+        super.setAuthenticationFailureHandler(new JWTAuthenticationFailureHandler());
     }
 
     @Override
@@ -36,10 +37,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             User credentials = new ObjectMapper().readValue(req.getInputStream(), User.class);
 
-            if (userService.findByUsername(credentials.getUsername()) == null) {
-                log.debug("Authentication Failed, User userName={} does not exists", credentials.getUsername());
-                throw new RuntimeException("The user does not exists");
-            }
+          // if (userService.findByUsername(credentials.getUsername()) == null) {
+          //      log.debug("Authentication Failed, User userName={} does not exists", credentials.getUsername());
+              //  throw new RuntimeException("The user does not exists");
+          //  }
+
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

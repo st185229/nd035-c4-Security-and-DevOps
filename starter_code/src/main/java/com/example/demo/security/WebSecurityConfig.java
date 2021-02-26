@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,7 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, SecurityConstants.CATALOGUE_URL).permitAll() //Should be able to browse inventory without login
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), getApplicationContext()))
+                //.addFilter(new JWTAuthenticationFilter(authenticationManager(), getApplicationContext()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -56,9 +58,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.parentAuthenticationManager(super.authenticationManagerBean())
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(bCryptPasswordEncoder);
+        //auth.parentAuthenticationManager(super.authenticationManagerBean())
+        //        .userDetailsService(userDetailsService)
+        //        .passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -69,5 +72,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfig.addExposedHeader(SecurityConstants.HEADER_STRING);
         source.registerCorsConfiguration("/**", corsConfig);
         return source;
+    }
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new JWTAuthenticationFailureHandler();
     }
 }

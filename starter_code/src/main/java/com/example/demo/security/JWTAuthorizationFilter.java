@@ -30,10 +30,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(SecurityConstants.HEADER_STRING);
         // Check whether authenticated already
-        if (header != null && header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
-            UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+            chain.doFilter(request, response);
+            return;
         }
+
+        UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
         chain.doFilter(request, response);
     }
 
@@ -47,12 +52,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .verify(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
                     .getSubject();
 
-            if (user == null) {
-                log.error("Login failed, user couldn't be authorised");
-                throw new RuntimeException("User does not exists");
+          //  if (user == null) {
+          //      log.error("Login failed, user couldn't be authorised");
+            //    throw new RuntimeException("User does not exists");
+          //  }
+          //  log.debug("Login  successful");
+            if (user != null) {
+                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             }
-            log.debug("Login  successful");
-            return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            log.error("Login failed, user couldn't be authorised");
+            return null;
         }
         log.error("Login failed, user couldn't be authorised");
         return null;
