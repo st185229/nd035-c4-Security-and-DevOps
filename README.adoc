@@ -8,7 +8,7 @@ Author:- Suresh Thomas
 
 Please click on details link > below each section to collapse that part of doc
 
-== 1.0  Organisation of the code
+== 1.0  Overview
 
 This report is the high level write-up of submission by Suresh Thomas. This aim is to demonstrate
 the learning of key security and DevOps skills from this course. The specific concerns addressed here are
