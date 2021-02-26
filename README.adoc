@@ -201,7 +201,27 @@ image::splunk_reports/docker_deploymet.png[docker deployed application]
 ====
 
 == 5.0 Git process
-All development work is done a dev branch, the code is committed and pushed to dev. The merge of code into master/main is done through pull request(PR). A .ignore file removes build, log and IDE files.
+All development work is done a dev branch, the code is committed and pushed to dev. The merge of code into master/main is done through pull request(PR). A .ignore file removes build, log and IDE files. See some diagrams below
+
+[%collapsible]
+====
+I did not adopt a trunk based strategy , instead adopted a https://www.toptal.com/software/trunk-based-development-git-flow[GitFlow]
+
+The diagram shows the gitflow, anchored to dev branch.
+
+The Main/Master is protected at GitHub. It was controlled through PR
+
+image::splunk_reports/GitBranch.png[Git Branch]
+
+The PR process below
+
+image::splunk_reports/Pullrequest.png[ Pull requests]
+
+The master branch is protected at GitHub
+
+image::splunk_reports/MasterProtect.png[Protected Master]
+
+====
 
 == 6.0 Metrics dashboard and Alerts
 
