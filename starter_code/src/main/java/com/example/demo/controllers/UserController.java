@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @Log4j2
 @RequestMapping("/api/user")
@@ -26,7 +28,7 @@ public class UserController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
-        var user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         if (user.isEmpty()) {
             log.error("Invalid user");
             return ResponseEntity.notFound().build();

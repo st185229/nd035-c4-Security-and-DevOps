@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.UserOrder;
 import com.example.demo.service.OrderService;
@@ -31,7 +32,7 @@ public class OrderController {
             log.error("Invalid user for creating order userName={}", username);
             return ResponseEntity.notFound().build();
         }
-        var cart = user.getCart();
+        Cart cart = user.getCart();
         if(cart.getItems().isEmpty()){
             log.error("The cart is empty for userName={}", username);
             return ResponseEntity.notFound().build();

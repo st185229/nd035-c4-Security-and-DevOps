@@ -77,7 +77,7 @@ public class ItemControllerTest {
         //depends on how do you run it
         assertEquals(10, items.size(),2);
         assertNotEquals(items.get(0), items.get(1));
-        var hashCode = items.get(0).hashCode();
+        int hashCode = items.get(0).hashCode();
 
 
     }

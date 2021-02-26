@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/item")
@@ -25,7 +26,7 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<List<Item>> getItems() {
         log.info("Get Items");
-        var items = itemService.findAllInventoryItems();
+        List<Item> items = itemService.findAllInventoryItems();
         log.debug("Number of items returned={}", items.size());
         return ResponseEntity.ok(items);
     }
@@ -33,7 +34,7 @@ public class ItemController {
     @GetMapping("/{id}")
     public ResponseEntity<Item> getItemById(@PathVariable Long id) {
         log.debug("Get Item id={}", id);
-        var item = itemService.findInventoryItemById(id);
+        Optional<Item> item = itemService.findInventoryItemById(id);
         log.debug("Get Item id={},item={}", id, item);
         return ResponseEntity.of(item);
     }
